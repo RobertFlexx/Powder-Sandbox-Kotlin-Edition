@@ -34,7 +34,7 @@ To install on Debian/Ubuntu:
 sudo apt install openjdk-17-jdk kotlin libjna-java
 ```
 
-To install on Fedora/Ultramarine/Chimera:
+To install on Fedora/Ultramarine:
 
 ```bash
 sudo dnf install java-17-openjdk kotlin jna jna-platform
