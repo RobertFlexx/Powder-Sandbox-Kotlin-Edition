@@ -4,6 +4,8 @@ A modern JVM-based edition of the Powder Sandbox, built in **Kotlin** for clarit
 
 Kotlin’s design makes this edition approachable for both JVM veterans and newcomers, offering the same core sandbox experience with a more concise and readable codebase.
 
+### See [GameHub](https://github.com/RobertFlexx/Powder-Sandbox-GameHub) for more editions of this game.
+
 ---
 
 ## Features
