@@ -26,11 +26,18 @@ Kotlin’s design makes this edition approachable for both JVM veterans and newc
 
 * Java 17+ or any JDK compatible with Kotlin 1.9+
 * Kotlin compiler (`kotlinc`) or IntelliJ IDEA for development
+* **JNA (Java Native Access)** library for ncurses terminal rendering
 
 To install on Debian/Ubuntu:
 
 ```bash
-sudo apt install openjdk-17-jdk kotlin
+sudo apt install openjdk-17-jdk kotlin libjna-java
+```
+
+To install on Fedora/Ultramarine/Chimera:
+
+```bash
+sudo dnf install java-17-openjdk kotlin jna jna-platform
 ```
 
 ---
@@ -44,18 +51,59 @@ git clone https://github.com/RobertFlexx/Powder-Sandbox-Kotlin-Edition
 cd Powder-Sandbox-Kotlin-Edition
 ```
 
-Compile and run:
+### Option 1 – Compile Manually with `kotlinc`
+
+Compile using the JNA libraries already installed on your system:
 
 ```bash
-kotlinc PowderSandbox.kt -include-runtime -d powder.jar
-java -jar powder.jar
+kotlinc PowderSandbox.kt \
+  -cp "/usr/share/java/jna.jar:/usr/share/java/jna-platform.jar" \
+  -include-runtime -d powder.jar
 ```
 
-Alternatively, if it’s a Gradle project:
+Then run:
+
+```bash
+java -cp "powder.jar:/usr/share/java/jna.jar:/usr/share/java/jna-platform.jar" PowderSandboxKt
+```
+
+If you don’t have `jna-platform.jar`, install it via your package manager or manually download it:
+
+```bash
+sudo wget -P /usr/share/java https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.14.0/jna-platform-5.14.0.jar
+```
+
+### Option 2 – Use Gradle (Recommended)
+
+Create a `build.gradle.kts` file:
+
+```kotlin
+plugins {
+    kotlin("jvm") version "2.0.0"
+    application
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("net.java.dev.jna:jna:5.14.0")
+    implementation("net.java.dev.jna:jna-platform:5.14.0")
+}
+
+application {
+    mainClass.set("PowderSandboxKt")
+}
+```
+
+Then just run:
 
 ```bash
 gradle run
 ```
+
+This setup automatically downloads JNA and compiles everything properly.
 
 ---
 
@@ -92,6 +140,33 @@ All three JVM editions share the same **simulation logic, element behavior, and 
 * **Kotlin** – clean and practical for long-term maintenance.
 * **Scala** – expressive and advanced for abstract designs.
 * **Groovy** – dynamic and easy for fast experimentation.
+
+---
+
+## Troubleshooting
+
+**Problem:** `unresolved reference: jna`
+
+**Solution:** Ensure the JNA JARs exist and are included in your classpath:
+
+```bash
+sudo find /usr -name "jna*.jar"
+```
+
+Then use those paths in your `-cp` argument.
+
+**Problem:** `ncurses` not working on Windows.
+
+**Solution:** JNA ncurses bindings are *natively Unix-only*. For Windows, use **Windows Terminal** under WSL2 or port to `jna-win32-console`.
+
+**Problem:** Flickering or color issues.
+
+**Solution:** Ensure your terminal supports 256-color mode and UTF-8:
+
+```bash
+export TERM=xterm-256color
+export LANG=en_US.UTF-8
+```
 
 ---
 
